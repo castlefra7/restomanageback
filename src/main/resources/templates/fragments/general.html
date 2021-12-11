@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html>
+<head th:fragment="head">
+<title>Back-Office Restaurant</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link th:href="@{/css/bulma.min.css}" rel="stylesheet" />
+<link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+	<div th:fragment="header">
+		<div id="sidebar" class="main-color">
+			<aside class="menu">
+				<nav class="navbar main-color is-flex is-justify-content-center" role="navigation" aria-label="main navigation">
+					<div class="navbar-brand">
+						<a class="navbar-item" th:href="@{/}"> <img th:src="@{/images/logo.jpg}"
+							alt="Smmec">
+						</a>
+					</div>
+				</nav>
+				<p class="menu-label">Tableau de bord</p>
+				<ul class="menu-list">
+					<li><a th:href="@{/}">Statistiques</a></li>
+				</ul>
+				<p class="menu-label">Produits</p>
+				<ul class="menu-list">
+					<li><a th:href="@{/}">Liste</a></li>
+				</ul>
+				<p class="menu-label">Catégories</p>
+				<ul class="menu-list">
+					<li><a th:href="@{/}">Liste</a></li>
+				</ul>
+				<p class="menu-label">Tables</p>
+				<ul class="menu-list">
+					<li><a th:href="@{/}">Liste</a></li>
+				</ul>
+			</aside>
+		</div>
+		<div id="header">
+			<nav class="navbar main-color">
+				<div class="navbar-end">
+					<div class="navbar-item">Aina</div>
+					<div class="navbar-item">
+						<div class="field is-grouped">
+							<p class="control">
+								<a class="button is-small" href="#"> <span>Se déconnecter</span>
+								</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+
+	<div class="content" th:fragment="footer">
+		<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/html2pdf.bundle.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/chart.js}"></script>
+		<script type="text/javascript" th:src="@{/js/app.js}"></script>
+	</div>
+</body>
+</html>
