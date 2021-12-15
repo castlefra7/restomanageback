@@ -1,191 +1,71 @@
-const URL = "http://localhost:8080/stats-payment-by-date";
+const URL_STAT_BY_PROD= "http://localhost:8080/api/back/stat/selling";
 
-function ajaxExample() {
-    fetch(URL)
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+/* CHART FUNCTIONS */
+function removeData(chart) {
+	chart.data.labels = [];
+	chart.data.datasets.forEach((dataset) => {
+		dataset.data = [];
+	});
+	chart.update();
 }
 
-$('#btn-update').click(function () {
-    $(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-        const id_emp = $("#id").val();
-        const id_semaine = $("#id-semaine-update").val();
+function addData(chart, label, data) {
+	chart.data.labels.push(label);
+	chart.data.datasets.forEach((dataset) => {
+		dataset.data.push(data);
+	});
+	chart.update();
+}
 
-        const url = `http://localhost:8080/employees-pointage-update-front?id-semaine=${id_semaine}&id-emp=${id_emp}`;
+function get_label_data(map) {
+	const labels = [];
+	const data = [];
+	const temp = [];
+	for (const [key, value] of Object.entries(map)) {
+		temp.push({
+			key: key,
+			value: value
+		});
+	}
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                if (data) {
-                    if (data.status) {
-                        if (data.status.code == 200) {
-                            let d = data.data[0];
-                            d.forEach((dd) => {
-                                $(`#${dd.weekOfDay}-ferier`).val(dd.numberHoursFerier);
-                                $(`#${dd.weekOfDay}-day`).val(dd.numberHoursDaily);
-                                $(`#${dd.weekOfDay}-night`).val(dd.numberHoursNightly);
-                            })
-                        } else {
-                            alert(data.status.message);
-                        }
-                    }
-                }
-            },
-        });
-    });
-});
+	temp.sort(function(a, b) {
+		return b.value - a.value;
+	});
 
-$('#validate-hours').click(function () {
-    console.log("Calculating hours");
-    $(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-        const url = "http://localhost:8080/employees-pointage-validate-front/";
-        const id_emp = $("#id").val();
-        const id_semaine = $("#id-semaine").val();
+	for (let iT = 0; iT < temp.length; iT++) {
+		labels.push(temp[iT].key);
+		data.push(temp[iT].value);
+	}
 
-        const numberDays = 7;
-        const pointings = [];
-        for (let iD = 1; iD <= numberDays; iD++) {
-            pointings.push({
-                // isHoliday:$(`#${iD}-ferier`).is(":checked"),
-                isHoliday: false,
-                numberHoursFerier: $(`#${iD}-ferier`).val(),
-                weekOfDay: iD,
-                numberHoursDaily: $(`#${iD}-day`).val(),
-                numberHoursNightly: $(`#${iD}-night`).val(),
-                id_semaine: id_semaine,
-                id_employee: id_emp
-            });
-            // console.log($(`#${iD}-ferier`).is(":checked"));
-            // console.log($(`#${iD}-day`).val());
-            // console.log($(`#${iD}-night`).val());
-        }
+	return {
+		labels: labels,
+		data: data
+	};
+}
 
+/* GENERATE COLORS */
 
-        const data = {
-            pointings: pointings,
-            employee: {
-                id: id_emp
-            },
-            semaine: id_semaine
-        };
+function generate_colors(count) {
+	const COLORS = [
+		'#C5283D',
+		'#730071',
+		'#390040',
+		'#074F57',
+		'#481D24',
+		'#175676',
+		'#1E152A',
+		
+		'#FFC857',
+		'#C297B8',
+		'#255F85'
+	];
+	const result = [];
+	for (let iC = 0; iC < count; iC++) {
+		result.push(COLORS[iC % COLORS.length]);
+	}
+	return result;
+}
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-                if (data) {
-                    if (data.status) {
-                        if (data.status.code == 200) {
-                            window.location.href = 'http://localhost:8080/employees-fiche-front/' + id_emp;
-                        } else {
-                            alert(data.status.message);
-                        }
-                    }
-                }
-            },
-        });
-    });
-})
-
-
-$("#calculate-hours").click(function (event) {
-    console.log("Calculating hours");
-    $(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-        const url = "http://localhost:8080/employees-pointage-front/";
-        const id_emp = $("#id").val();
-
-        const numberDays = 7;
-        const pointings = [];
-        for (let iD = 1; iD <= numberDays; iD++) {
-            pointings.push({
-                // isHoliday:$(`#${iD}-ferier`).is(":checked"),
-                isHoliday: false,
-                numberHoursFerier: $(`#${iD}-ferier`).val(),
-                weekOfDay: iD,
-                numberHoursDaily: $(`#${iD}-day`).val(),
-                numberHoursNightly: $(`#${iD}-night`).val()
-            });
-            // console.log($(`#${iD}-ferier`).is(":checked"));
-            // console.log($(`#${iD}-day`).val());
-            // console.log($(`#${iD}-night`).val());
-        }
-
-        const data = {
-            pointings: pointings,
-            employee: {
-                id: id_emp
-            }
-        };
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                if (data.status.code == 200) {
-                    console.table(data.data[0]);
-                    const hoursData = data.data[0];
-                    $("#table-hours tbody tr").empty();
-                    hoursData.forEach((hourData) => {
-                        $('#table-hours > tbody:last-child').append(`<tr><td>${hourData.code}</td><td>${hourData.hours}</td></tr>`);
-                    });
-                } else {
-                    alert(data.status.message);
-                }
-                
-            },
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Get all "navbar-burger" elements
-    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-    // Check if there are any navbar burgers
-    if ($navbarBurgers.length > 0) {
-
-        // Add a click event on each of them
-        $navbarBurgers.forEach(el => {
-            el.addEventListener('click', () => {
-
-                // Get the target from the "data-target" attribute
-                const target = el.dataset.target;
-                const $target = document.getElementById(target);
-
-                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-                el.classList.toggle('is-active');
-                $target.classList.toggle('is-active');
-
-            });
-        });
-    }
-
-
-
-});
+function color(index) {
+	return COLORS[index % COLORS.length];
+}

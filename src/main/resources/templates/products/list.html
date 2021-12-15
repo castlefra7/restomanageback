@@ -10,7 +10,7 @@
 					<div class="column is-12">
 						<h1 class="title">Produits</h1>
 						<div class="field">
-							<a class="button is-small" href="#"><i
+							<a class="button is-small" th:href="@{/back/insert-products}"><i
 								class="fas fa-plus mr-1"></i>Nouveau</a>
 						</div>
 						<form method="get" action="#"
@@ -47,20 +47,20 @@
 								<tr>
 									<th>Nom</th>
 									<th>Prix</th>
-									<th>Catï¿½gorie</th>
+									<th>CatÃ©gorie</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="prod: ${products}">
 									<td th:text="${prod.getName()}" />
 									<td th:text="${prod.getPrice()}" />
-									<td th:text="${prod.getId_category()}" />
+									<td th:text="${prod.getCategory().getName()}" />
 								</tr>
 						</table>
 						<nav th:if="${numberpages > 0}" class="pagination is-centered"
 							role="navigation" aria-label="pagination">
 							<a th:href="@{/back/products(page=${prev})}"
-								class="pagination-previous">Précédent</a> <a
+								class="pagination-previous">PrÃ©cÃ©dent</a> <a
 								th:href="@{/back/products(page=${next})}" class="pagination-next">Suivant</a>
 							<ul class="pagination-list">
 								<li th:each="iter: ${#numbers.sequence(1, __${numberpages}__)}">

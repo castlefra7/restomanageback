@@ -1,28 +1,19 @@
 package mg.ankoay.hotelmanage.bl.services;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-/**
- * @author lacha
- *
- */
 @Entity
-@Table(name = "product_categories", schema = "restomanage")
-public class ProductCategory extends Base {
+@Table(name = "affiliates", schema = "restomanage")
+public class Affiliate {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
-	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "id_affiliate", nullable = false)
-	private Affiliate affiliate;
+	private Integer id_company;
 
 	public Integer getId() {
 		return id;
@@ -40,12 +31,12 @@ public class ProductCategory extends Base {
 		this.name = name;
 	}
 
-	public Affiliate getAffiliate() {
-		return affiliate;
+	public Integer getId_company() {
+		return id_company;
 	}
 
-	public void setAffiliate(Affiliate affiliate) {
-		this.affiliate = affiliate;
+	public void setId_company(Integer id_company) {
+		this.id_company = id_company;
 	}
 
 }

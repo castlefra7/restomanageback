@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<div th:replace="fragments/general.html :: head"></div>
+<body>
+	<div id="body">
+		<div th:replace="fragments/general.html :: header"></div>
+		<div id="main-content">
+			<section class="mt-5">
+				<div class="content">
+					<div class="columns">
+						<div class="column is-4">
+							<div class="card">
+								<div class="card-content">
+									<div class="content">
+										<h2 class="title is-4" th:text="${product_count}" />
+										<p>
+											<i class="fas fa-chart-line mr-1"></i>Nombre de produits
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="column is-4">
+							<div class="card">
+								<div class="card-content">
+									<div class="content">
+										<h2 class="title is-4" th:text="${category_count}" />
+										<p>
+											<i class="fas fa-chart-line mr-1"></i>Nombre de catégories
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="column is-4">
+							<div class="card">
+								<div class="card-content">
+									<div class="content">
+										<h2 class="title is-4" th:text="${table_count}" />
+										<p>
+											<i class="fas fa-chart-line mr-1"></i>Nombre de tables
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="columns">
+						<div class="column is-5">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-report-amount-by-product"></canvas>
+								</div>
+							</div>
+						</div>
+						<div class="column is-5">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-report-count-by-product"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		<div th:replace="fragments/general.html :: footer"></div>
+		<script type="text/javascript" th:src="@{/js/stat.js}"></script>
+	</div>
+</body>
+</html>

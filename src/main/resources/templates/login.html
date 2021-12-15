@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<div th:replace="fragments/general.html :: head"></div>
+<body>
+	<div id="body">
+		<div th:replace="fragments/general.html :: header"></div>
+		<div id="main-content">
+			<section class="mt-5">
+				<div class="content">
+					<div class="columns is-mobile is-centered">
+						<div class="column is-narrow">
+							<form th:action="@{/perform_login}" method="post">
+								<div class="field">
+									<label class="label">Nom</label>
+									<div class="control">
+										<input class="input" type="text" name="username" value="admin" />
+									</div>
+								</div>
+
+								<div class="field">
+									<label class="label">Mot de passe</label>
+									<div class="control">
+										<input class="input" type="password" name="password"
+											value="FPO_12p)([]" />
+									</div>
+								</div>
+								<input class="button is-small is-fullwidth" type="submit"
+									name="submit" value="Valider" />
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		<div th:replace="fragments/general.html :: footer"></div>
+	</div>
+</body>
+</html>

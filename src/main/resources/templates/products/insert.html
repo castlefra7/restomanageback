@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<div th:replace="fragments/general.html :: head"></div>
+<body>
+	<div id="body">
+		<div th:replace="fragments/general.html :: header"></div>
+		<div id="main-content">
+			<div class="columns is-desktop is-centered">
+				<div class="column p-5 is-one-third">
+					<h1 class="title is-3" th:if="${isupdate == null || isupdate == false}">Nouveau produit</h1>
+					<h1 th:if="${isupdate != null && isupdate == true}">Mise à jour</h1>
+
+					<form th:object="${product}" method="post"
+						th:action="${isupdate != null && isupdate == true}?@{/back/update-products}:@{/back/products}">
+						<input type="hidden" th:field="*{id}" th:value="${product.id}" />
+						<div class="field">
+							<label class="label">Entreprise</label>
+							<div class="select">
+								<select class="input" th:field="*{id_affiliate}">
+									<option th:each='affil: ${affiliates}' th:text='${affil.getName()}' th:value="${affil.getId()}" />
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label class="label">Nom</label>
+							<div class="control">
+								<input class="input" th:field="*{name}" type='text' th:value="${product.name}" />
+							</div>
+						</div>
+						<div class="field">
+							<label class="label">Catégorie</label>
+							<div class="select">
+								<select class="input" th:field="*{category.id}">
+									<option th:each='categ: ${product_categories}' th:text='${categ.getName()}' th:value="${categ.getId()}" />
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label class="label">Prix</label>
+							<div class="control">
+								<input class="input" th:field="*{price}" step='any' type='number' th:value="${product.price}" />
+							</div>
+						</div>
+
+						<div class="buttons">
+							<button class="button is-fullwidth" type="submit">Valider</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<div th:replace="fragments/general.html :: footer"></div>
+	</div>
+</body>
+</html>

@@ -7,15 +7,15 @@ public class ResponseBody<T> {
 	private Iterable<T> data;
 
 	public ResponseBody() {
-		setStatut(new Status());
+		setStatus(new Status());
 		setData(new ArrayList<>());
 	}
 
-	public Status getStatut() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public final void setStatut(Status statut) {
+	public final void setStatus(Status statut) {
 		this.status = statut;
 	}
 
