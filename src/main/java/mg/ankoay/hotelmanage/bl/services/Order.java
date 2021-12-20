@@ -26,6 +26,8 @@ public class Order {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderDetail> orderDetails;
+	
+	
 
 	public Integer getId_order() {
 		return id_order;

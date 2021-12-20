@@ -54,6 +54,8 @@ create table restomanage.products (
 create table restomanage.orders (
     id_order serial primary key,
     date_order timestamp not null,
+    id_point_of_sale int references restomanage.point_of_sales(id),
+    id_user int references restomanage.users(id),
     id_table int references restomanage.tables(id),
     date_payment timestamp null check(date_payment >= date_order)
 );
@@ -68,6 +70,14 @@ create table restomanage.order_details (
     unique (id_order, id_product)
 );
 
+create table restomanage.open_cashiers (
+    id serial primary key,
+    date_open timestamp not null,
+    fund double precision not null check (fund >= 0),
+    id_point_of_sale int references restomanage.point_of_sales(id),
+    id_user int references restomanage.users(id),
+    date_closed timestamp null check (date_closed >= date_open)
+);
 
 /* Statistics */
 create view restomanage.stat_sell_amount_by_prod as select restomanage.order_details.id_product, sum(restomanage.order_details.amount) as amount from restomanage.order_details group by restomanage.order_details.id_product;
@@ -90,9 +100,11 @@ insert into restomanage.product_categories (name, id_affiliate) values ('burger'
 insert into restomanage.products (name, price, id_category, id_affiliate) values ('crêpe sucré', 15000, 1, 1);
 insert into restomanage.products (name, price, id_category, id_affiliate) values ('crêpe salé', 25000, 1, 1);
 insert into restomanage.products (name, price, id_category, id_affiliate) values ('crêpe poulet', 30000, 1, 1);
+insert into restomanage.products (name, price, id_category, id_affiliate) values ('Burger fromage poulet', 50000, 2, 1);
 
 insert into restomanage.tables (name, id_affiliate) values ('table 1', 1);
 
 insert into restomanage.orders (date_order, id_table, date_payment) values ('2021-12-01 08:00', 1, '2021-12-01 08:01');
+
 insert into restomanage.order_details (id_order, id_product, quantity, unit_price, amount) values (1, 1, 5, 15000, 75000), (1, 2, 5, 25000, 125000);
 

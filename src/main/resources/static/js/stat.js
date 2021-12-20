@@ -16,7 +16,7 @@ fetch(URL_STAT_BY_PROD)
 			if (jresponse.status.code == 200) {
 				const data = jresponse.data;
 				console.log(data);
-				if(data && data.length > 0) {
+				if (data && data.length > 0) {
 					report_product_amount_purchases("chart-report-amount-by-product", data[0].sellAmount);
 					report_product_count_purchases("chart-report-count-by-product", data[0].sellCount);
 				}
@@ -36,7 +36,7 @@ fetch(URL_STAT_BY_PROD)
 function report_product_count_purchases(id_canvas, map) {
 	const labels_temp = [];
 	const data_temp = [];
-	for(let iM = 0; iM < map.length; iM++) {
+	for (let iM = 0; iM < map.length; iM++) {
 		labels_temp.push(map[iM].name);
 		data_temp.push(map[iM].numbers);
 	}
@@ -83,11 +83,10 @@ function report_product_count_purchases(id_canvas, map) {
 	}
 }
 
-
 function report_product_amount_purchases(id_canvas, map) {
 	const labels_temp = [];
 	const data_temp = [];
-	for(let iM = 0; iM < map.length; iM++) {
+	for (let iM = 0; iM < map.length; iM++) {
 		labels_temp.push(map[iM].name);
 		data_temp.push(map[iM].amount);
 	}
@@ -108,13 +107,19 @@ function report_product_amount_purchases(id_canvas, map) {
 		datasets: datasets
 	};
 	const config = {
-		type: 'doughnut',
+		type: 'bar',
 		data: data,
 		options: {
+			indexAxis: 'y',
 			responsive: true,
+			elements: {
+				bar: {
+					borderWidth: 2,
+				}
+			},
 			plugins: {
 				legend: {
-					position: 'bottom',
+					position: 'right',
 				},
 				title: {
 					display: true,
