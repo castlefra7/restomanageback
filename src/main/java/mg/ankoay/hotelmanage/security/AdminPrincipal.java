@@ -18,62 +18,59 @@ import mg.ankoay.hotelmanage.bl.services.User;
  * @author lacha
  */
 public final class AdminPrincipal implements UserDetails {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6125831766773827299L;
 	private User user;
-    
-    public AdminPrincipal(User user) {
-        this.setUser(user);
-    }
 
+	public AdminPrincipal(User user) {
+		this.setUser(user);
+	}
 
-    
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new AdminAuthority());
-        return authorities;
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new AdminAuthority());
+		return authorities;
+	}
 
-    @Override
-    public String getPassword() {
-        return this.getUser().getPassword();
-    }
+	@Override
+	public String getPassword() {
+		return this.getUser().getPassword();
+	}
 
-    @Override
-    public String getUsername() {
-        return this.getUser().getName();
-    }
+	@Override
+	public String getUsername() {
+		return this.getUser().getName();
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-    
-    
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 }

@@ -5,11 +5,11 @@
 	<div id="body">
 		<div th:replace="fragments/general.html :: header"></div>
 		<div id="main-content">
+			<a class="button is-small" th:href="@{/back/products}">Retour</a>
 			<div class="columns is-desktop is-centered">
 				<div class="column p-5 is-one-third">
 					<h1 class="title is-3" th:if="${isupdate == null || isupdate == false}">Nouveau produit</h1>
 					<h1 th:if="${isupdate != null && isupdate == true}">Mise à jour</h1>
-
 					<form th:object="${product}" method="post"
 						th:action="${isupdate != null && isupdate == true}?@{/back/update-products}:@{/back/products}">
 						<input type="hidden" th:field="*{id}" th:value="${product.id}" />

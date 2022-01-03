@@ -89,10 +89,11 @@ create view restomanage.stat_sell_count_by_prod_full as select restomanage.produ
 /* INITIAL DATA */
 insert into restomanage.users (name, password, user_type) values ('admin', crypt('FPO_12p)([]', gen_salt('bf')), 'adm');
 insert into restomanage.users (name, password, user_type) values ('user', crypt('FPO_12p)([]', gen_salt('bf')), 'usr');
+insert into restomanage.users (name, password, user_type) values ('user1', crypt('FPO_12p)([]', gen_salt('bf')), 'usr');
 
-insert into restomanage.companies (name) values ('enxaneta');
+insert into restomanage.companies (name) values ('entreprise');
 
-insert into restomanage.affiliates (id_company,  name) values (1, 'majunga be');
+insert into restomanage.affiliates (id_company,  name) values (1, 'entreprise_1');
 
 insert into restomanage.product_categories (name, id_affiliate) values ('crêpe', 1);
 insert into restomanage.product_categories (name, id_affiliate) values ('burger', 1);
@@ -104,7 +105,5 @@ insert into restomanage.products (name, price, id_category, id_affiliate) values
 
 insert into restomanage.tables (name, id_affiliate) values ('table 1', 1);
 
-insert into restomanage.orders (date_order, id_table, date_payment) values ('2021-12-01 08:00', 1, '2021-12-01 08:01');
-
+insert into restomanage.orders (date_order, id_table, id_user, date_payment) values ('2021-12-01 08:00', 1, 2, '2021-12-01 08:01');
 insert into restomanage.order_details (id_order, id_product, quantity, unit_price, amount) values (1, 1, 5, 15000, 75000), (1, 2, 5, 25000, 125000);
-

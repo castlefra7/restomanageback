@@ -19,7 +19,7 @@
 							<div class="is-flex">
 								<div class="field">
 									<div class="control">
-										<input id="name" name="user-name" value=""
+										<input name="name" th:value="${name}"
 											class="input is-small" type="text" placeholder="Nom...">
 									</div>
 								</div>
@@ -47,23 +47,28 @@
 								<tr>
 									<th>Nom</th>
 									<th>Entreprise</th>
+									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="categ: ${productcategories}">
 									<td th:text="${categ.getName()}" />
-									<td th:text="${categ.getAffiliate().getName()}" />
+									<td th:text="${categ.getAffiliate().getName()}" /> 
+									<td>
+										<a th:href="@{/back/update-productcategories(id=${categ.getId()})}" class="button is-small is-warning">Mettre à jour</a>
+										<a th:href="@{/back/delete-productcategories(id=${categ.getId()})}" class="button is-small is-danger">Supprimer</a>
+									</td>
 								</tr>
 						</table>
 						<nav th:if="${numberpages > 0}" class="pagination is-centered"
 							role="navigation" aria-label="pagination">
-							<a th:href="@{/back/productcategories(page=${prev})}"
+							<a th:href="@{/back/productcategories(page=${prev},name=${name})}"
 								class="pagination-previous">Précédent</a> <a
-								th:href="@{/back/productcategories(page=${next})}" class="pagination-next">Suivant</a>
+								th:href="@{/back/productcategories(page=${next},name=${name})}" class="pagination-next">Suivant</a>
 							<ul class="pagination-list">
 								<li th:each="iter: ${#numbers.sequence(1, __${numberpages}__)}">
 									<a th:classappend="${(iter-1== page) ? 'is-current': ''}"
-									th:href="@{/back/productcategories(page=${iter-1})}" th:text="${iter}"
+									th:href="@{/back/productcategories(page=${iter-1},name=${name})}" th:text="${iter}"
 									class="pagination-link">-1</a>
 								</li>
 							</ul>

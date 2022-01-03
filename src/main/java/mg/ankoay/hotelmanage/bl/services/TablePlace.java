@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 @javax.persistence.Table(name = "tables", schema = "restomanage")
-public class Table {
+public class TablePlace {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

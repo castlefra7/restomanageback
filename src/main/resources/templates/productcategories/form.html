@@ -5,13 +5,14 @@
 	<div id="body">
 		<div th:replace="fragments/general.html :: header"></div>
 		<div id="main-content">
+			<a class="button is-small" th:href="@{/back/productcategories}">Retour</a>
 			<div class="columns is-desktop is-centered">
 				<div class="column p-5 is-one-third">
 					<h1 class="title is-3" th:if="${isupdate == null || isupdate == false}">Nouvelle catégorie</h1>
-					<h1 th:if="${isupdate != null && isupdate == true}">Mise Ã  jour</h1>
+					<h1 th:if="${isupdate != null && isupdate == true}">Mise à jour</h1>
 
 					<form th:object="${productcategory}" method="post"
-						th:action="${isupdate != null && isupdate == true}?@{/back/update-productcategory}:@{/back/productcategories}">
+						th:action="${isupdate != null && isupdate == true}?@{/back/update-productcategories}:@{/back/productcategories}">
 						<input type="hidden" th:field="*{id}" th:value="${productcategory.id}" />
 						<div class="field">
 							<label class="label">Entreprise</label>
@@ -31,9 +32,7 @@
 						<div class="buttons">
 							<button class="button is-fullwidth" type="submit">Valider</button>
 						</div>
-
 					</form>
-
 				</div>
 			</div>
 		</div>

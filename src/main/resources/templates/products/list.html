@@ -19,8 +19,8 @@
 							<div class="is-flex">
 								<div class="field">
 									<div class="control">
-										<input id="name" name="user-name" value=""
-											class="input is-small" type="text" placeholder="Nom...">
+										<input name="name" th:value="${name}"
+											class="input is-small" type="text" placeholder=" Nom...">
 									</div>
 								</div>
 								<div class="field">
@@ -32,8 +32,12 @@
 									<div class="field">
 										<div class="control">
 											<div class="select is-small">
-												<select name="nb-rows" id="number-rows">
-													<option value="1">1</option>
+												<select name="count-per-page" id="count-per-page">
+													<option value="5">5</option>
+													<option value="10">10</option>
+													<option value="25">25</option>
+													<option value="50">50</option>
+													<option value="100">100</option>
 												</select>
 											</div>
 										</div>
@@ -48,24 +52,31 @@
 									<th>Nom</th>
 									<th>Prix</th>
 									<th>Catégorie</th>
+									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="prod: ${products}">
 									<td th:text="${prod.getName()}" />
-									<td th:text="${prod.getPrice()}" />
+									<td th:text="${#numbers.formatDecimal(prod.getPrice(),3,'POINT',2,'COMMA')} + ' Ar'" />
+									
 									<td th:text="${prod.getCategory().getName()}" />
+									<td>
+										<a th:href="@{/back/update-products(id=${prod.getId()})}" class="button is-small is-warning">Mettre à jour</a>
+										<a th:href="@{/back/delete-products(id=${prod.getId()})}" class="button is-small is-danger">Supprimer</a>
+									</td>
 								</tr>
 						</table>
 						<nav th:if="${numberpages > 0}" class="pagination is-centered"
 							role="navigation" aria-label="pagination">
-							<a th:href="@{/back/products(page=${prev})}"
-								class="pagination-previous">Précédent</a> <a
-								th:href="@{/back/products(page=${next})}" class="pagination-next">Suivant</a>
+							<a th:href="@{/back/products(page=${prev},name=${name})}"
+								class="pagination-previous">Précédent</a> 
+							<a th:href="@{/back/products(page=${next},name=${name})}" 
+								class="pagination-next">Suivant</a>
 							<ul class="pagination-list">
 								<li th:each="iter: ${#numbers.sequence(1, __${numberpages}__)}">
 									<a th:classappend="${(iter-1== page) ? 'is-current': ''}"
-									th:href="@{/back/products(page=${iter-1})}" th:text="${iter}"
+									th:href="@{/back/products(page=${iter-1},name=${name})}" th:text="${iter}"
 									class="pagination-link">-1</a>
 								</li>
 							</ul>
