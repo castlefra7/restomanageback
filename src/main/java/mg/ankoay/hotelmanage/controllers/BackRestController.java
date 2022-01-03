@@ -3,6 +3,9 @@ package mg.ankoay.hotelmanage.controllers;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import mg.ankoay.hotelmanage.bl.repositories.OpenCashierRepository;
+import mg.ankoay.hotelmanage.bl.repositories.OrderDetailRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OrderRepository;
 import mg.ankoay.hotelmanage.bl.repositories.ProductCategoryRepository;
 import mg.ankoay.hotelmanage.bl.repositories.ProductRepository;
@@ -40,19 +44,38 @@ public class BackRestController {
 	private OrderRepository orderRepository;
 	@Autowired
 	private OpenCashierRepository openCashierRepository;
+	@Autowired
+	private OrderDetailRepository orderDetailRepository;
+	
 
 	private static Logger logger = LoggerFactory.getLogger(BackRestController.class);
+	
+	@PutMapping("/orders")
+	public ResponseBody<Object> updateOrder(@RequestBody Order attr) {
+		ResponseBody<Object> response = new ResponseBody<>();
+		try {
+			attr.update(orderRepository, orderDetailRepository);
+		} catch (Exception ex) {
+			response.getStatus().setCode(500);
+			response.getStatus().setMessage(ex.getMessage());
+			logger.info(ex.getMessage());
+		}
+		return response;
+	}
+
 	
 	@GetMapping("/orders/unpaid")
 	public ResponseBody<Order> allUnpaidOrders() {
 		ResponseBody<Order> response = new ResponseBody<>();
+		//TODO: ORDER BY DATE DESC
 		response.setData(orderRepository.findAllUnpaidOrders());
 		return response;
 	}
 
 	@GetMapping("/orders/paid")
 	public ResponseBody<Order> allPaidOrders() {
-		ResponseBody<Order> response = new ResponseBody<>(); 
+		ResponseBody<Order> response = new ResponseBody<>();
+		//TODO: ORDER BY PAYMENT DATE DESC
 		response.setData(orderRepository.findAllPaidOrders());
 		return response;
 	}
@@ -64,6 +87,7 @@ public class BackRestController {
 		openCashierRepository.save(attr);
 		return response;
 	}
+
 
 	@PutMapping("/orders/pay")
 	public ResponseBody<Object> payOrder(@RequestBody Order attr) {

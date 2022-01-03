@@ -2,8 +2,8 @@ package mg.ankoay.hotelmanage.bl.services;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import mg.ankoay.hotelmanage.bl.repositories.OrderDetailRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OrderRepository;
 
 @Entity
@@ -32,32 +32,45 @@ public class Order {
 	private Timestamp date_order;
 	private Timestamp date_payment;
 	@JsonManagedReference
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	private Set<OrderDetail> orderDetails;
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderDetail> orderDetails;
 	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "id_table", nullable = false)
 	private TablePlace table;
-	
+
 	private Integer id_user;
-	
-	public Integer getId_user() {
-		return id_user;
-	}
 
-	public void setId_user(Integer id_user) {
-		this.id_user = id_user;
-	}
-
-	public void pay(OrderRepository orderRepository) throws Exception {
-		
+	public void update(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository) throws Exception {
 		Optional<Order> ord = orderRepository.findById(this.getId_order());
-		if(ord.isPresent()) { 
+		if (ord.isPresent()) {
 			Order value = ord.get();
-			Date now = new Date();
-			value.setDate_payment(new Timestamp(now.getTime()));
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			User user = (User) authentication.getPrincipal();
+
+			
+			value.getOrderDetails().clear();
 			orderRepository.save(value);
-		} else {
-			throw new Exception("Veuillez spécifier une commande valide");
+
+			value.setId_user(user.getId());
+			value.setTable(this.getTable());
+
+			for(OrderDetail ordDetail: this.getOrderDetails()) {
+				value.getOrderDetails().add(ordDetail);
+			}
+			orderRepository.save(value);
+		}
+	}
+
+	public void pay(OrderRepository orderRepository) {
+
+		Optional<Order> ord = orderRepository.findById(this.getId_order());
+		if (ord.isPresent()) {
+			Order value = ord.get();
+			if (value.getDate_payment() == null) {
+				Date now = new Date();
+				value.setDate_payment(new Timestamp(now.getTime()));
+				orderRepository.save(value);
+			}
 		}
 	}
 
@@ -93,12 +106,20 @@ public class Order {
 		this.date_payment = date_payment;
 	}
 
-	public Set<OrderDetail> getOrderDetails() {
+	public List<OrderDetail> getOrderDetails() {
 		return orderDetails;
 	}
 
-	public void setOrderDetails(Set<OrderDetail> orderDetails) {
+	public void setOrderDetails(List<OrderDetail> orderDetails) {
 		this.orderDetails = orderDetails;
+	}
+
+	public Integer getId_user() {
+		return id_user;
+	}
+
+	public void setId_user(Integer id_user) {
+		this.id_user = id_user;
 	}
 
 }

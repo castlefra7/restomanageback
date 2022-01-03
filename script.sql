@@ -105,5 +105,9 @@ insert into restomanage.products (name, price, id_category, id_affiliate) values
 
 insert into restomanage.tables (name, id_affiliate) values ('table 1', 1);
 
-insert into restomanage.orders (date_order, id_table, id_user, date_payment) values ('2021-12-01 08:00', 1, 2, '2021-12-01 08:01');
+insert into restomanage.orders (date_order, id_table, id_user, date_payment) values ('2021-12-01 08:00', 1, 2, null);
 insert into restomanage.order_details (id_order, id_product, quantity, unit_price, amount) values (1, 1, 5, 15000, 75000), (1, 2, 5, 25000, 125000);
+
+
+select * from restomanage.orders;
+ select * from restomanage.order_details;
