@@ -62,6 +62,8 @@ public class SecurityConfiguration {
 					.permitAll()
 					
 					.antMatchers("/back/statistics/**").hasAuthority(AdminAuthority.ADMIN)
+					
+					.antMatchers("/stat/**").hasAuthority(AdminAuthority.ADMIN)
 
 					// .anyRequest().permitAll()
 					.anyRequest().authenticated()

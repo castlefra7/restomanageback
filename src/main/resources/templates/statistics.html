@@ -8,13 +8,32 @@
 			<section class="mt-5">
 				<div class="content">
 					<div class="columns">
+						<div class="column is-12">
+							<h1>Détails des ventes</h1>
+							<div class="columns">
+								<div class="column is-4">
+									<form class="is-flex">
+										<!-- <button class="button"><</button> -->
+										<div class="field">
+										  <div class="control">
+											<input id="selected-date" class="input is-small" th:value="${today}" type="date">
+										  </div>
+										</div>
+										<!-- <button class="button">></button> -->
+										<button id="btn-validate1" class="button is-primary is-small">Valider</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="columns">
 						<div class="column is-4">
 							<div class="card">
 								<div class="card-content">
 									<div class="content">
-										<h2 class="title is-4" th:text="${product_count}" />
+										<h2 class="title is-4" id="stat-sum-selling-amount"></h2>
 										<p>
-											<i class="fas fa-chart-line mr-1"></i>Nombre de produits
+											<i class="fas fa-chart-line mr-1"></i>Total des ventes - MGA
 										</p>
 									</div>
 								</div>
@@ -24,9 +43,9 @@
 							<div class="card">
 								<div class="card-content">
 									<div class="content">
-										<h2 class="title is-4" th:text="${category_count}" />
+										<h2 class="title is-4"  id="stat-count-selling"></h2>
 										<p>
-											<i class="fas fa-chart-line mr-1"></i>Nombre de catégories
+											<i class="fas fa-chart-line mr-1"></i>Nombre de ventes
 										</p>
 									</div>
 								</div>
@@ -36,30 +55,79 @@
 							<div class="card">
 								<div class="card-content">
 									<div class="content">
-										<h2 class="title is-4" th:text="${table_count}" />
+										<h2 class="title is-4"  id="stat-avg-selling-amount"></h2>
 										<p>
-											<i class="fas fa-chart-line mr-1"></i>Nombre de tables
+											<i class="fas fa-chart-line mr-1"></i>Montant moyen des ventes - MGA
 										</p>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
 					<div class="columns">
-						<div class="column is-6">
+						<div class="column is-12">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-report-amount-by-hours"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="columns">
+						<div class="column is-3">
+							<h1>Aperçu</h1>
+							<form class="is-flex">
+								<!-- <button class="button"><</button> -->
+								<div class="field">
+								  <div class="select is-small">
+								    <select id="selected-month">
+										<option selected value="1">Janvier</option>
+										<option value="2">Février</option>
+										<option value="3">Mars</option>
+										<option value="4">Avril</option>
+										<option value="5">Mai</option>
+										<option value="6">Juin</option>
+										<option value="7">Juillet</option>
+										<option value="8">Août</option>
+										<option value="9">Septembre</option>
+										<option value="10">Octobre</option>
+										<option value="11">Novembre</option>
+										<option value="12">Décembre</option>
+									</select>
+								  </div>
+								</div>
+								<button id="btn-validate2" class="button is-small is-primary">Valider</button>
+							</form>
+						</div>
+					</div>
+
+					<div class="columns">
+						<div class="column is-12">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-selling-amount-progress"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="columns">
+						<div class="column is-4">
 							<div class="card">
 								<div class="card-content">
 									<canvas id="chart-report-amount-by-product"></canvas>
 								</div>
 							</div>
 						</div>
-						<div class="column is-6">
+						<!-- <div class="column is-6">
 							<div class="card">
 								<div class="card-content">
 									<canvas id="chart-report-count-by-product"></canvas>
 								</div>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</section>
@@ -69,3 +137,43 @@
 	</div>
 </body>
 </html>
+
+<!-- 
+<div class="columns">
+	<div class="column is-4">
+		<div class="card">
+			<div class="card-content">
+				<div class="content">
+					<h2 class="title is-4" th:text="${product_count}" />
+					<p>
+						<i class="fas fa-chart-line mr-1"></i>Nombre de produits
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="column is-4">
+		<div class="card">
+			<div class="card-content">
+				<div class="content">
+					<h2 class="title is-4" th:text="${category_count}" />
+					<p>
+						<i class="fas fa-chart-line mr-1"></i>Nombre de catégories
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="column is-4">
+		<div class="card">
+			<div class="card-content">
+				<div class="content">
+					<h2 class="title is-4" th:text="${table_count}" />
+					<p>
+						<i class="fas fa-chart-line mr-1"></i>Nombre de tables
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> -->

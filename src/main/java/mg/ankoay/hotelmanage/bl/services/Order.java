@@ -14,12 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import mg.ankoay.hotelmanage.bl.repositories.OrderDetailRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OrderRepository;
 
 @Entity
@@ -40,24 +41,48 @@ public class Order {
 
 	private Integer id_user;
 
-	public void update(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository) throws Exception {
+	private static Logger logger = LoggerFactory.getLogger(Order.class);
+
+	public void update(OrderRepository orderRepository) throws Exception {
 		Optional<Order> ord = orderRepository.findById(this.getId_order());
 		if (ord.isPresent()) {
 			Order value = ord.get();
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			User user = (User) authentication.getPrincipal();
+			if (value.getDate_payment() == null) {
 
-			
-			value.getOrderDetails().clear();
-			orderRepository.save(value);
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				User user = (User) authentication.getPrincipal();
 
-			value.setId_user(user.getId());
-			value.setTable(this.getTable());
+				value.getOrderDetails().removeIf(order -> {
+					boolean wasThere = false;
+					for (OrderDetail ordDetail : this.getOrderDetails()) {
+						if (ordDetail.getProduct().getId() == order.getProduct().getId()) {
+							wasThere = true;
+						}
+					}
+					if (!wasThere)
+						order.setOrder(null);
 
-			for(OrderDetail ordDetail: this.getOrderDetails()) {
-				value.getOrderDetails().add(ordDetail);
+					return !wasThere;
+				});
+
+				for (OrderDetail ordDetail : this.getOrderDetails()) {
+					OrderDetail foundDtl = null;
+					for (OrderDetail ordDetailVal : value.getOrderDetails()) {
+						if (ordDetail.getProduct().getId() == ordDetailVal.getProduct().getId()) {
+							foundDtl = ordDetailVal;
+							break;
+						}
+					}
+					if (foundDtl != null) {
+						foundDtl.setQuantity(ordDetail.getQuantity());
+					} else {
+						value.getOrderDetails().add(ordDetail);
+					}
+				}
+				value.setId_user(user.getId());
+				value.setTable(this.getTable());
+				orderRepository.save(value);
 			}
-			orderRepository.save(value);
 		}
 	}
 

@@ -27,7 +27,7 @@ public class OrderDetail {
 
 	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "id_order", nullable = false)
+	@JoinColumn(name = "id_order")
 	private Order order;
 
 	@OneToOne(cascade = CascadeType.DETACH)

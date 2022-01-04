@@ -1,5 +1,7 @@
 package mg.ankoay.hotelmanage.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -42,9 +44,13 @@ public class BackController {
 	@GetMapping("/statistics")
 	public String pageStatistics(Model model) {
 		model.addAttribute("curr", "stat");
-		model.addAttribute("product_count", productRepository.count());
-		model.addAttribute("category_count", productCategoryRepository.count());
-		model.addAttribute("table_count", tablePlaceRepository.count());
+		//model.addAttribute("product_count", productRepository.count());
+		//model.addAttribute("category_count", productCategoryRepository.count());
+		//model.addAttribute("table_count", tablePlaceRepository.count());
+		
+		SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
+		
+		model.addAttribute("today", sdt.format(new Date()));
 		return "statistics";
 	}
 

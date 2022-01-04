@@ -1,4 +1,13 @@
-const URL_STAT_BY_PROD= "http://localhost:8080/api/back/stat/selling";
+const URL_STAT_BY_PROD= "http://localhost:8080/stat/selling";
+
+
+function set_value_card_currency(id_canvas, value) {
+	if (document.getElementById(id_canvas)) {
+		var element = document.getElementById(id_canvas);
+		let formated_value = new Intl.NumberFormat('fr-FR').format(value);
+		element.innerText = `${formated_value}`;
+	}
+}
 
 /* CHART FUNCTIONS */
 function removeData(chart) {

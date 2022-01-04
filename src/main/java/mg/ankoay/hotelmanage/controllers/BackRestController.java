@@ -2,9 +2,7 @@ package mg.ankoay.hotelmanage.controllers;
 
 import java.sql.Timestamp;
 import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,28 +44,27 @@ public class BackRestController {
 	private OpenCashierRepository openCashierRepository;
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
-	
 
 	private static Logger logger = LoggerFactory.getLogger(BackRestController.class);
-	
+
 	@PutMapping("/orders")
 	public ResponseBody<Object> updateOrder(@RequestBody Order attr) {
 		ResponseBody<Object> response = new ResponseBody<>();
 		try {
-			attr.update(orderRepository, orderDetailRepository);
+			attr.update(orderRepository);
 		} catch (Exception ex) {
 			response.getStatus().setCode(500);
 			response.getStatus().setMessage(ex.getMessage());
 			logger.info(ex.getMessage());
+			ex.printStackTrace();
 		}
 		return response;
 	}
 
-	
 	@GetMapping("/orders/unpaid")
 	public ResponseBody<Order> allUnpaidOrders() {
 		ResponseBody<Order> response = new ResponseBody<>();
-		//TODO: ORDER BY DATE DESC
+		// TODO: ORDER BY DATE DESC
 		response.setData(orderRepository.findAllUnpaidOrders());
 		return response;
 	}
@@ -75,7 +72,7 @@ public class BackRestController {
 	@GetMapping("/orders/paid")
 	public ResponseBody<Order> allPaidOrders() {
 		ResponseBody<Order> response = new ResponseBody<>();
-		//TODO: ORDER BY PAYMENT DATE DESC
+		// TODO: ORDER BY PAYMENT DATE DESC
 		response.setData(orderRepository.findAllPaidOrders());
 		return response;
 	}
@@ -87,7 +84,6 @@ public class BackRestController {
 		openCashierRepository.save(attr);
 		return response;
 	}
-
 
 	@PutMapping("/orders/pay")
 	public ResponseBody<Object> payOrder(@RequestBody Order attr) {
@@ -102,16 +98,32 @@ public class BackRestController {
 		return response;
 	}
 
+	@PostMapping("/orders-pay")
+	public ResponseBody<Object> insertPayOrder(@RequestBody Order attr) {
+		ResponseBody<Object> response = new ResponseBody<>();
+		attr.setDate_order(new Timestamp(new Date().getTime()));
+		attr.setDate_payment(new Timestamp(new Date().getTime()));
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) authentication.getPrincipal();
+
+		attr.setId_user(user.getId());
+
+		orderRepository.save(attr);
+
+		return response;
+	}
+
 	@PostMapping("/orders")
 	public ResponseBody<Object> insertOrder(@RequestBody Order attr) {
 		ResponseBody<Object> response = new ResponseBody<>();
 		attr.setDate_order(new Timestamp(new Date().getTime()));
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User user = (User)authentication.getPrincipal();
+		User user = (User) authentication.getPrincipal();
 
 		attr.setId_user(user.getId());
-		
+
 		orderRepository.save(attr);
 		return response;
 	}

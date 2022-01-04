@@ -1,53 +1,3 @@
-/* MULTISELECT */
-#multiselect {
-	/* background-color: beige; */
-}
-
-#multiselect h2 {
-	font-size: 1rem;
-	text-decoration: underline;
-	font-weight: 800;
-	padding-left: 17px;
-}
-
-#multiselect #left, #multiselect #center, #multiselect #right {
-	width: 100%;
-	/* padding: 7px 10px; */
-	border: solid 1px black;
-	min-height: 200px !important;
-	max-height: 200px !important;
-	overflow: auto;
-	/* padding: 0px 17px; */
-}
-
-#multiselect li:hover {
-	background-color:darkgreen;
-	/* padding-left: 17px; */
-	color: white;
-}
-
-#multiselect li {
-	cursor: pointer;
-}
-
-#multiselect #left {
-	/* background-color: burlywood; */
-}
-
-#multiselect #center {
-	/* background-color:chocolate; */
-}
-
-#multiselect #right {
-	/* background-color: darkgoldenrod; */
-}
-
-/* BODY */
-#body {
-	/* overflow: hidden; */
-
-}
-
 /* SIDEBAR */
 #sidebar {
 	position: fixed;
@@ -104,7 +54,7 @@
 
 /* CARD */
 .content {
-	text-align: center;
+	/* text-align: center; */
 }
 
 /* CONSTANTS */
