@@ -11,3 +11,7 @@
 - Qui peut mettre à jour une commande ? la même personne qui l'a prise ?
 
 - Peut on annuler entiérement une commande ?
+
+- Afficher aussi le montant du fonds de caisse dans statistique journalière?
+
+- Est ce que les commandes non payées du jour précédent peuvent être payer au jour suivant ?

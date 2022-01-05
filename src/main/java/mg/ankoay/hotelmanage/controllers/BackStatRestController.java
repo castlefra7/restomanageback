@@ -29,6 +29,8 @@ public class BackStatRestController {
 
 	private static Logger logger = LoggerFactory.getLogger(BackStatRestController.class);
 
+	
+
 	@GetMapping("/selling")
 	public ResponseBody<StatSelling> sellings(
 			@RequestParam(name = "date", required = false, defaultValue = "") String date) {
@@ -43,10 +45,11 @@ public class BackStatRestController {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dt);
 			Integer month = cal.get(Calendar.MONTH) + 1;
+			Integer year = cal.get(Calendar.YEAR);
 
 			Pageable pageable = PageRequest.of(0, 10);
 
-			stat.setSellAmount(statSellingAmountRepository.sellingAmountByProd(month, pageable).getContent());
+			stat.setSellAmount(statSellingAmountRepository.sellingAmountByProd(month, year, pageable).getContent());
 			// stat.setSellCount(statSellingCountRepository.findAll());
 
 			stat.setSellAmountByHour(statSellingAmountRepository.sellingAmountByHour(dt));
@@ -54,13 +57,13 @@ public class BackStatRestController {
 			stat.setSellingCount(statSellingAmountRepository.sellingCount(dt));
 			stat.setAvgSellingAmount(statSellingAmountRepository.avgSellingAmount(dt));
 
-			// TODO: Pass the Year as parameter too
-			stat.setSellingAmountProgress(statSellingAmountRepository.sellingAmountProgress(month));
+			stat.setSellingAmountProgress(statSellingAmountRepository.sellingAmountProgress(month, year));
 
 			response.setData(Arrays.asList(stat));
 		} catch (Exception ex) {
 			response.getStatus().setCode(500);
 			response.getStatus().setMessage(ex.getMessage());
+			ex.printStackTrace();
 		}
 
 		return response;

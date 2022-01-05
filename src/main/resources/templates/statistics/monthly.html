@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<div th:replace="fragments/general.html :: head"></div>
+
+<body>
+	<div id="body">
+		<div th:replace="fragments/general.html :: header"></div>
+		<div id="main-content">
+			<section class="mt-5">
+				<div class="content">
+
+					<div class="columns">
+						<div class="column is-2 ">
+							<h1>Aperçu</h1>
+							<form class="is-flex">
+								<div class="field mr-1">
+									<div class="select is-small">
+										<select id="selected-month">
+											<option selected value="1">Janvier</option>
+											<option value="2">Février</option>
+											<option value="3">Mars</option>
+											<option value="4">Avril</option>
+											<option value="5">Mai</option>
+											<option value="6">Juin</option>
+											<option value="7">Juillet</option>
+											<option value="8">Août</option>
+											<option value="9">Septembre</option>
+											<option value="10">Octobre</option>
+											<option value="11">Novembre</option>
+											<option value="12">Décembre</option>
+										</select>
+									</div>
+								</div>
+								<div class="field">
+									<div class="select is-small">
+										<select id="selected-year">
+											<option selected value="2022">2022</option>
+											<option th:each="iter: ${#numbers.sequence(2023, 2050)}"
+												th:value="${iter}" th:text="${iter}"></option>
+										</select>
+									</div>
+								</div>
+								<!-- <button id="btn-validate" class="button is-small is-primary">Valider</button> -->
+							</form>
+						</div>
+
+						<!-- <div class="ml-2 column is-10">
+							
+
+							<div class="columns mt-1">
+								
+							</div>
+						</div> -->
+					</div>
+
+					<div class="columns">
+						<div class="column is-7">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-selling-amount-progress"></canvas>
+								</div>
+							</div>
+						</div>
+						<div class="column is-5">
+							<div class="card">
+								<div class="card-content">
+									<canvas id="chart-report-amount-by-product"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+			</section>
+		</div>
+		<div th:replace="fragments/general.html :: footer"></div>
+		<script type="text/javascript" th:src="@{/js/statistics/monthly.js}"></script>
+	</div>
+</body>
+</html>
+<!-- <div class="column is-6">
+	<div class="card">
+		<div class="card-content">
+			<canvas id="chart-report-count-by-product"></canvas>
+		</div>
+	</div>
+</div> -->

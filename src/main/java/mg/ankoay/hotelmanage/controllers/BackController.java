@@ -41,9 +41,18 @@ public class BackController {
 
 	private static Logger logger = LoggerFactory.getLogger(BackController.class);
 // Statistics 
-	@GetMapping("/statistics")
+	@GetMapping("/statistics/monthly")
 	public String pageStatistics(Model model) {
-		model.addAttribute("curr", "stat");
+		model.addAttribute("curr", "stat-mnthly");		
+		SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
+		
+		model.addAttribute("today", sdt.format(new Date()));
+		return "statistics/monthly";
+	}
+
+	@GetMapping("/statistics/daily")
+	public String pageStatisticsDaily(Model model) {
+		model.addAttribute("curr", "stat-dly");
 		//model.addAttribute("product_count", productRepository.count());
 		//model.addAttribute("category_count", productCategoryRepository.count());
 		//model.addAttribute("table_count", tablePlaceRepository.count());
@@ -51,17 +60,45 @@ public class BackController {
 		SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
 		
 		model.addAttribute("today", sdt.format(new Date()));
-		return "statistics";
+		return "statistics/daily";
 	}
 
 // TABLE CRUD
+	@PostMapping("/update-tables")
+	public String updateTable(@ModelAttribute TablePlace attr) {
+		Optional<TablePlace> foundTbl = tablePlaceRepository.findById(attr.getId());
+		// TODO: Maybe update the enterprise too
+		TablePlace tblToSave = foundTbl.get();
+
+		tblToSave.setName(attr.getName());
+		tablePlaceRepository.save(tblToSave);
+		return "redirect:/back/tables";
+	}
+	
+	@GetMapping("/update-tables")
+	public String pageUpdateTable(Model model, @RequestParam(name="id", required=true) int id) {
+		model.addAttribute("affiliates", affiliateRepository.findAll());
+		Optional<TablePlace> tb = tablePlaceRepository.findById(id);
+		TablePlace tbl = tb.get();
+		model.addAttribute("table", tbl);
+		model.addAttribute("isupdate", true);
+		return "tables/form";
+	}
+	
+
+	@GetMapping("/delete-tables")
+	public String deleteTable(@RequestParam(name="id", required=true) int id) {
+		tablePlaceRepository.deleteById(id);
+		return "redirect:/back/tables";
+	}
+
 	@GetMapping("/insert-table")
 	public String pageInsertTable(Model model) {
 		model.addAttribute("affiliates", affiliateRepository.findAll());
 		TablePlace tbl = new TablePlace();
 		tbl.setName("Table 10");
 		model.addAttribute("table", tbl);
-		return "tables/insert";
+		return "tables/form";
 	}
 
 	@PostMapping("/tables")

@@ -1,4 +1,4 @@
-const URL_STAT_BY_PROD= "http://localhost:8080/stat/selling";
+const URL_STAT_BY_PROD = "http://localhost:8080/stat/selling";
 
 
 function set_value_card_currency(id_canvas, value) {
@@ -10,6 +10,70 @@ function set_value_card_currency(id_canvas, value) {
 }
 
 /* CHART FUNCTIONS */
+
+function format_date(date) {
+	let day = date.getDate();
+	let month = date.getMonth() + 1;
+	if (day < 10) {
+		day = "0" + day;
+	}
+	if (month < 10) {
+		month = "0" + month;
+
+	}
+	return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function addDays(date, days) {
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
+function daysInMonth(month, year) {
+	return new Date(year, month, 0).getDate();
+}
+
+function generateMonthLabels(dt) {
+	const nbDays = daysInMonth(dt.getMonth() + 1, dt.getFullYear());
+	const result = [];
+	for (let iD = 1; iD <= nbDays; iD++) {
+		let mnth = "";
+		if ((dt.getMonth() + 1) < 10) {
+			mnth = "0" + (dt.getMonth() + 1);
+		} else {
+			mnth = dt.getMonth() + 1;
+		}
+
+		let dy = "";
+		if (iD < 10) {
+			dy = "0" + iD;
+		} else {
+			dy = iD;
+		}
+		result.push(`${dt.getFullYear()}-${mnth}-${dy}`);
+	}
+	return result;
+}
+
+function confChart(id_canvas, id_chart, config, labels, lbl_dt) {
+
+	if (document.getElementById(id_canvas)) {
+		if (id_chart instanceof Chart) {
+			removeData(id_chart);
+			for (let iD = 0; iD < labels.length; iD++) {
+				addData(id_chart, labels[iD], lbl_dt.data[iD]);
+			}
+			return id_chart;
+		} else {
+			let ctx = document.getElementById(id_canvas).getContext("2d");
+			return new Chart(ctx, config);
+		}
+	}
+	return null;
+}
+
+
 function removeData(chart) {
 	chart.data.labels = [];
 	chart.data.datasets.forEach((dataset) => {
@@ -37,7 +101,7 @@ function get_label_data(map) {
 		});
 	}
 
-	temp.sort(function(a, b) {
+	temp.sort(function (a, b) {
 		return b.value - a.value;
 	});
 
@@ -63,7 +127,7 @@ function generate_colors(count) {
 		'#481D24',
 		'#175676',
 		'#1E152A',
-		
+
 		'#FFC857',
 		'#C297B8',
 		'#255F85'

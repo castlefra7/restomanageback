@@ -44,6 +44,7 @@ public class Order {
 	private static Logger logger = LoggerFactory.getLogger(Order.class);
 
 	public void update(OrderRepository orderRepository) throws Exception {
+		if(this.getOrderDetails().size() <= 0) throw new Exception("Veuillez spécifier au moins un produit");
 		Optional<Order> ord = orderRepository.findById(this.getId_order());
 		if (ord.isPresent()) {
 			Order value = ord.get();
@@ -75,6 +76,8 @@ public class Order {
 					}
 					if (foundDtl != null) {
 						foundDtl.setQuantity(ordDetail.getQuantity());
+						logger.info(String.valueOf(ordDetail.getAmount()));
+						foundDtl.setAmount(ordDetail.getAmount());
 					} else {
 						value.getOrderDetails().add(ordDetail);
 					}

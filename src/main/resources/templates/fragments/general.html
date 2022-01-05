@@ -26,7 +26,8 @@
 					<div sec:authorize='hasAuthority("adm")'>
 						<p class="menu-label">Tableau de bord</p>
 						<ul class="menu-list">
-							<li><a th:classappend="${(curr== 'stat') ? 'is-active': ''}" th:href="@{/back/statistics}">Statistiques</a></li>
+							<li><a th:classappend="${(curr== 'stat-dly') ? 'is-active': ''}" th:href="@{/back/statistics/daily}">Journalier</a></li>
+							<li><a th:classappend="${(curr== 'stat-mnthly') ? 'is-active': ''}" th:href="@{/back/statistics/monthly}">Mensuel</a></li>
 						</ul>
 					</div>
 					<p class="menu-label">Produits</p>

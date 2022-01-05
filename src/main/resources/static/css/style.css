@@ -1,7 +1,7 @@
 /* SIDEBAR */
 #sidebar {
 	position: fixed;
-	width: 200px;
+	width: 175px;
 	z-index: 1;
 	top: 0;
 	left: 0;
@@ -34,7 +34,7 @@
 }
 
 #header {
-	margin-left: 200px;
+	margin-left: 175px;
 	min-height: 60px !important;
 	max-height: 60px !important;
 	height: 60px !important;
@@ -42,8 +42,8 @@
 
 /* MAIN CONTENT */
 #main-content {
-	padding: 17px;
-	margin-left: 220px;
+	padding: 7px 17px 17px 0px;
+	margin-left: 195px;
 	overflow-x: auto;
 }
 

@@ -13,46 +13,23 @@
 							<a class="button is-small" th:href="@{/back/insert-table}"><i
 								class="fas fa-plus mr-1"></i>Nouveau</a>
 						</div>
-						<form method="get" action="#"
-							class="is-flex my-2 is-justify-content-space-between">
-							<input name="page" type="hidden" value="" />
-							<div class="is-flex">
-								<div class="field">
-									<div class="control">
-										<input id="name" name="user-name" value=""
-											class="input is-small" type="text" placeholder="Nom...">
-									</div>
-								</div>
-								<div class="field">
-									<button class="button is-small">Valider</button>
-								</div>
-							</div>
-							<div class="is-flex is-justify-content-flex-end">
-								<form>
-									<div class="field">
-										<div class="control">
-											<div class="select is-small">
-												<select name="nb-rows" id="number-rows">
-													<option value="1">1</option>
-												</select>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</form>
 						<table
 							class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
 							<thead>
 								<tr>
 									<th>Nom</th>
 									<th>Entreprise</th>
+									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="tbl: ${tables}">
 									<td th:text="${tbl.getName()}" />
 									<td th:text="${tbl.getId_affiliate()}" />
+									<td>
+										<a th:href="@{/back/update-tables(id=${tbl.getId()})}" class="button is-small is-warning">Mettre à jour</a>
+										<a th:href="@{/back/delete-tables(id=${tbl.getId()})}" class="button is-small is-danger">Supprimer</a>
+									</td>
 								</tr>
 						</table>
 						<nav th:if="${numberpages > 0}" class="pagination is-centered"

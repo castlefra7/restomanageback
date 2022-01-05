@@ -71,6 +71,8 @@ create table restomanage.order_details (
     unique (id_order, id_product)
 );
 
+
+-- TODO: Add columns (real amount, system amount)
 create table restomanage.open_cashiers (
     id serial primary key,
     date_open timestamp not null,
