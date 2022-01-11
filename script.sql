@@ -52,13 +52,15 @@ create table restomanage.products (
     unique (name, id_affiliate)
 );
 
+-- TODO: Add user that gets the payment
 create table restomanage.orders (
     id_order serial primary key,
     date_order timestamp not null,
     id_point_of_sale int references restomanage.point_of_sales(id),
     id_user int references restomanage.users(id),
     id_table int references restomanage.tables(id),
-    date_payment timestamp null check(date_payment >= date_order)
+    date_payment timestamp null check(date_payment >= date_order),
+    later_payment varchar(500) null check(later_payment <> '')
 );
 
 create table restomanage.order_details (
@@ -71,7 +73,6 @@ create table restomanage.order_details (
     unique (id_order, id_product)
 );
 
-
 -- TODO: Add columns (real amount, system amount)
 create table restomanage.open_cashiers (
     id serial primary key,
@@ -81,6 +82,15 @@ create table restomanage.open_cashiers (
     id_user int references restomanage.users(id),
     date_closed timestamp null check (date_closed >= date_open)
 );
+
+create table restomanage.expenses (
+    id serial primary key,
+    date_expense timestamp not null,
+    id_user int references restomanage.users(id),
+    amount double precision not null check (amount >= 0),
+    reason varchar(250) not null check (reason <> '')
+);
+
 
 /* Statistics */
 create view restomanage.stat_sell_amount_by_prod as select restomanage.order_details.id_product, sum(restomanage.order_details.amount) as amount from restomanage.order_details group by restomanage.order_details.id_product;
@@ -134,6 +144,12 @@ insert into restomanage.orders (date_order, id_table, id_user, date_payment) val
 insert into restomanage.order_details (id_order, id_product, quantity, unit_price, amount) values (4, 2, 3, 15000, 75000), (4, 3, 5, 25000, 125000);
 
 
+insert into restomanage.orders (date_order, id_table, id_user, date_payment, later_payment) values ('2022-01-10 10:10', 1, 2, null, 'mme nivo');
+insert into restomanage.order_details (id_order, id_product, quantity, unit_price, amount) values (5, 2, 3, 15000, 75000), (5, 3, 5, 25000, 125000);
+
+
+
+insert into restomanage.expenses (date_expense, amount, id_user, reason) values ('2022-01-11 10:10', 15000, 2, 'menaka');
 
 select * from restomanage.orders;
 select * from restomanage.order_details;

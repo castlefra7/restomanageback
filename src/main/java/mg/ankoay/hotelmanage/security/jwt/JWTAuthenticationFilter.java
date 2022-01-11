@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
@@ -19,6 +20,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mg.ankoay.hotelmanage.bl.services.User;
+import mg.ankoay.hotelmanage.security.AdminPrincipal;
 import mg.ankoay.hotelmanage.security.UserPrincipal;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -46,13 +48,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
 			Authentication auth) throws IOException {
-		UserPrincipal prp = (UserPrincipal) auth.getPrincipal();
-		String token = JWT.create().withSubject(prp.getUsername())
-				.withClaim("id", prp.getUser().getId())
-				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-				.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
+		String token = "";
 
-		String body = ((UserPrincipal) auth.getPrincipal()).getUsername() + " " + token;
+		if(auth.getPrincipal() != null) {
+			String className = auth.getPrincipal().getClass().getSimpleName();
+			if(className.startsWith("User")) {
+				UserPrincipal prp = (UserPrincipal) auth.getPrincipal();
+				token = JWT.create().withSubject(prp.getUsername())
+						.withClaim("id", prp.getUser().getId())
+						.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+						.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
+
+			} else if( className.startsWith("Admin")) {
+				AdminPrincipal prp = (AdminPrincipal) auth.getPrincipal();
+				token = JWT.create().withSubject(prp.getUsername())
+						.withClaim("id", prp.getUser().getId())
+						.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+						.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
+			}
+		}
+	
+		String body = ((UserDetails) auth.getPrincipal()).getUsername() + " " + token;
 
 		res.getWriter().write(body);
 		res.getWriter().flush();

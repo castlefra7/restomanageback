@@ -27,6 +27,14 @@ public class User {
 	private String name;
 	private String password;
 	private String user_type;
+	
+	public User(Integer _id) {
+		this.id = _id;
+	}
+	
+	public User() {
+		
+	}
 
 	public Integer getId() {
 		return id;

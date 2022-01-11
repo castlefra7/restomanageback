@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mg.ankoay.hotelmanage.bl.repositories.ExpenseRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OpenCashierRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OrderDetailRepository;
 import mg.ankoay.hotelmanage.bl.repositories.OrderRepository;
@@ -25,6 +27,7 @@ import mg.ankoay.hotelmanage.bl.repositories.ProductCategoryRepository;
 import mg.ankoay.hotelmanage.bl.repositories.ProductRepository;
 import mg.ankoay.hotelmanage.bl.repositories.TablePlaceRepository;
 import mg.ankoay.hotelmanage.bl.repositories.stat.StatSellingAmountRepository;
+import mg.ankoay.hotelmanage.bl.services.Expense;
 import mg.ankoay.hotelmanage.bl.services.OpenCashier;
 import mg.ankoay.hotelmanage.bl.services.Order;
 import mg.ankoay.hotelmanage.bl.services.Product;
@@ -50,6 +53,8 @@ public class BackRestController {
 	private OrderDetailRepository orderDetailRepository;
 	@Autowired
 	private StatSellingAmountRepository statSellingAmountRepository;
+	@Autowired
+	private ExpenseRepository expenseRepository;
 
 	private static Logger logger = LoggerFactory.getLogger(BackRestController.class);
 
@@ -65,6 +70,54 @@ public class BackRestController {
 			// TODO: Maybe pass the id_point_of_sale in the parameter too
 			stat.setSumSellingAmount(statSellingAmountRepository.sumSellingAmount(dt));
 			response.setData(Arrays.asList(stat));
+		} catch (Exception ex) {
+			response.getStatus().setCode(500);
+			response.getStatus().setMessage(ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@GetMapping("/orders/late-pay/count")
+	public ResponseBody<Integer> countAllExpenses(@RequestParam(name = "date", required = true) String date) {
+		ResponseBody<Integer> response = new ResponseBody<>();
+		try {
+			SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
+			java.sql.Date dt = new java.sql.Date(sdt.parse(date).getTime());
+
+			List<Order> all = (List<Order>) orderRepository.findAllUnPaidLaterPays(dt);
+			logger.info(dt.toString());
+			logger.info(String.valueOf(all.size()));
+			response.setData(Arrays.asList(all.size()));
+		} catch (Exception ex) {
+			response.getStatus().setCode(500);
+			response.getStatus().setMessage(ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@PostMapping("/expenses")
+	public ResponseBody<Object> insertExpense(@RequestBody Expense attr) {
+		ResponseBody<Object> response = new ResponseBody<>();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) authentication.getPrincipal();
+		attr.setUser(new User(user.getId()));
+		attr.setDate_expense(new Timestamp(new Date().getTime()));
+
+		expenseRepository.save(attr);
+		return response;
+	}
+
+	@GetMapping("/expenses")
+	public ResponseBody<Expense> allExpenses(@RequestParam(name = "date", required = true) String date) {
+		ResponseBody<Expense> response = new ResponseBody<>();
+		try {
+			SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
+			java.sql.Date dt = new java.sql.Date(sdt.parse(date).getTime());
+			response.setData(expenseRepository.findAllByDate(dt));
 		} catch (Exception ex) {
 			response.getStatus().setCode(500);
 			response.getStatus().setMessage(ex.getMessage());
@@ -147,11 +200,12 @@ public class BackRestController {
 		ResponseBody<Object> response = new ResponseBody<>();
 		attr.setDate_order(new Timestamp(new Date().getTime()));
 		attr.setDate_payment(new Timestamp(new Date().getTime()));
+		attr.setLater_payment(null);
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) authentication.getPrincipal();
 
-		attr.setId_user(user.getId());
+		attr.setUser(new User(user.getId()));
 
 		orderRepository.save(attr);
 
@@ -163,10 +217,14 @@ public class BackRestController {
 		ResponseBody<Object> response = new ResponseBody<>();
 		attr.setDate_order(new Timestamp(new Date().getTime()));
 
+		if (attr.getLater_payment() == null || attr.getLater_payment().trim().isEmpty()) {
+			attr.setLater_payment(null);
+		}
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) authentication.getPrincipal();
 
-		attr.setId_user(user.getId());
+		attr.setUser(new User(user.getId()));
 
 		orderRepository.save(attr);
 		return response;

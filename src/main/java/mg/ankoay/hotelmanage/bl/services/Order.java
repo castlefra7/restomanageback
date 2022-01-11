@@ -29,7 +29,6 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id_order;
-// TODO: Order by date_order	
 	private Timestamp date_order;
 	private Timestamp date_payment;
 	@JsonManagedReference
@@ -39,12 +38,18 @@ public class Order {
 	@JoinColumn(name = "id_table", nullable = false)
 	private TablePlace table;
 
-	private Integer id_user;
+	@ManyToOne(cascade = CascadeType.DETACH)
+	@JoinColumn(name = "id_user", nullable = false)
+	private User user;
+
+	private String later_payment;
 
 	private static Logger logger = LoggerFactory.getLogger(Order.class);
 
 	public void update(OrderRepository orderRepository) throws Exception {
-		if(this.getOrderDetails().size() <= 0) throw new Exception("Veuillez spécifier au moins un produit");
+		// TODO: Prevent modification when today != this.date_order
+		if (this.getOrderDetails().size() <= 0)
+			throw new Exception("Veuillez spécifier au moins un produit");
 		Optional<Order> ord = orderRepository.findById(this.getId_order());
 		if (ord.isPresent()) {
 			Order value = ord.get();
@@ -82,8 +87,16 @@ public class Order {
 						value.getOrderDetails().add(ordDetail);
 					}
 				}
-				value.setId_user(user.getId());
+				// TODO: Add column that inserts who updates the order
+				value.setUser(this.getUser());
 				value.setTable(this.getTable());
+
+				logger.info("ATOOOOOO: " + this.getLater_payment());
+				if (this.getLater_payment() == null || this.getLater_payment().trim().isEmpty()) {
+					value.setLater_payment(null);
+				} else {
+					value.setLater_payment(this.getLater_payment());
+				}
 				orderRepository.save(value);
 			}
 		}
@@ -100,6 +113,14 @@ public class Order {
 				orderRepository.save(value);
 			}
 		}
+	}
+
+	public String getLater_payment() {
+		return later_payment;
+	}
+
+	public void setLater_payment(String later_payment) {
+		this.later_payment = later_payment;
 	}
 
 	public TablePlace getTable() {
@@ -142,12 +163,12 @@ public class Order {
 		this.orderDetails = orderDetails;
 	}
 
-	public Integer getId_user() {
-		return id_user;
+	public User getUser() {
+		return user;
 	}
 
-	public void setId_user(Integer id_user) {
-		this.id_user = id_user;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }
